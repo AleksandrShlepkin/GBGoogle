@@ -13,12 +13,56 @@ import SwiftyJSON
 
 struct APIService {
     
+    private static let defaultCoordinate = CLLocation(latitude: 55.7522, longitude: 37.6156)
+    private static var defaultZoomMax: Float = 16.0
+    private static var defaultZoomMin: Float = 10.0
+
+    private static var mapView: GMSMapView!
+
+    
     
     private static var routesArray: [Route] = []
     private static var durationArray: [Duration] = []
     
     
-    static func duration(src: String, dst: String) {
+    // init local manager
+    
+    static func initLocationManager(_ locationManager: CLLocationManager,
+                                    delegate: UIViewController) {
+        var locationManager =  locationManager
+        locationManager = CLLocationManager()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.distanceFilter = 50
+        locationManager.startUpdatingLocation()
+        locationManager.delegate = delegate as? CLLocationManagerDelegate
+    }
+    
+    
+    // create map
+    static func createMap(on view: UIView,
+                          locationManager: CLLocationManager,
+                          mapView: GMSMapView,
+                          delegate: UIViewController) {
+        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? defaultZoomMax : defaultZoomMin
+        let camera = GMSCameraPosition.camera(withTarget: defaultCoordinate.coordinate, zoom: zoomLevel)
+        
+        
+        var mapView = mapView
+        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
+        mapView.settings.myLocationButton = true
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapView.isMyLocationEnabled = true
+        mapView.delegate = delegate as? GMSMapViewDelegate
+        self.mapView = mapView
+
+        
+
+    }
+    
+    
+    static func duration(src: String,
+                         dst: String) {
         
         let url =
         "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=\(src),DC&destinations=\(dst)&key=\(APIKey.apiKey)"
@@ -56,7 +100,8 @@ struct APIService {
     }
     
     //draw path
-    static func draw(src: CLLocationCoordinate2D, dst: CLLocationCoordinate2D){
+    static func draw(src: CLLocationCoordinate2D,
+                     dst: CLLocationCoordinate2D){
         
         // source location and destination
         let sourceLocation = "\(src.latitude),\(src.longitude)"
@@ -90,7 +135,8 @@ struct APIService {
                         let polyline = GMSPolyline.init(path: path)
                         polyline.strokeColor = .systemBlue
                         polyline.strokeWidth = 5
-//                        polyline.map = self.mainMap
+                        polyline.map = self.mapView
+                        print(route)
                     }
                 }
             }
@@ -98,27 +144,21 @@ struct APIService {
                 print(error.localizedDescription)
             }
         }
-        
-        // test data for source Marker
+
         let sourceMarker = GMSMarker()
         sourceMarker.position = src
         var data = [String : String]()
         data["name"] = "meng"
         sourceMarker.userData = data
-//        sourceMarker.map = self.mapView
+        sourceMarker.map = self.mapView
         
-        //customize icon
-//        let pin = UIImage(named: "car.png")!.resize(targetSize: CGSize(width: 40, height: 40))
-//        sourceMarker.icon = pin
-        
-        // test data for destinatio Marker
         let destinationMarker = GMSMarker()
         destinationMarker.position = dst
         destinationMarker.title = "Gurugram"
         destinationMarker.snippet = "The hub of industries"
-//        destinationMarker.map = self.mapView
+        destinationMarker.map = self.mapView
         
-        let camera = GMSCameraPosition(target: sourceMarker.position, zoom: 10)
+//        let camera = GMSCameraPosition(target: sourceMarker.position, zoom: 10)
 //        self.mapView.animate(to: camera)
     }
 }

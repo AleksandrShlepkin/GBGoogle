@@ -7,6 +7,7 @@
 
 import UIKit
 import GoogleMaps
+import RealmSwift
 
 class MainMapViewController: UIViewController {
     
@@ -17,47 +18,58 @@ class MainMapViewController: UIViewController {
     var geoCoder: CLGeocoder?
     var localManager: CLLocationManager?
     let defaultCoordinate = CLLocation(latitude: 55.7522, longitude: 37.6156)
-
+        
     var route: GMSPolyline?
     var routePath: GMSMutablePath?
     var defaultZoom: Float = 18.0
     
     
+    var flag: Bool = false
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        print(GMSServices.openSourceLicenseInfo())
-
-        
+        localManager = CLLocationManager()
+    
         configMap()
         delegateManager()
-        
+    }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        mainMap.clear()
     }
     
     
     @IBAction func plusButton(_ sender: Any) {
-        mainMap.animate(toZoom: defaultZoom + Float(1.53) )
+        plusZoom()
     }
     
     @IBAction func minusButton(_ sender: Any) {
-        mainMap.animate(toZoom: defaultZoom - Float(1.54) )
+        minusZoom()
+    }
+    
+    func plusZoom() {
+        defaultZoom += Float(0.5)
+        mainMap.animate(toZoom: defaultZoom )
+        
+    }
+    func minusZoom() {
+        defaultZoom -= Float(0.5)
+        mainMap.animate(toZoom: defaultZoom )
     }
     
     @IBAction func locationButton(_ sender: UIButton) {
-        
-        if route?.map == nil {
-        localManager?.requestLocation()
-        route?.map = nil
-        route = GMSPolyline()
-        routePath =  GMSMutablePath()
-        route?.map = mainMap
-        localManager?.startUpdatingLocation()
 
+        if flag == false {
+            flag = true
         } else {
-            route?.map = nil
+            flag = false
         }
     }
+    
+    
     
     
     private func configMap() {
@@ -68,10 +80,8 @@ class MainMapViewController: UIViewController {
         mainMap.isMyLocationEnabled = true
         mainMap.settings.myLocationButton = true
         
-
-        
-        
     }
+    
     private func delegateManager() {
         
         localManager = CLLocationManager()
@@ -81,8 +91,6 @@ class MainMapViewController: UIViewController {
         localManager?.startUpdatingLocation()
     }
     
-    
-    
 }
 
 extension MainMapViewController: GMSMapViewDelegate {
@@ -90,6 +98,9 @@ extension MainMapViewController: GMSMapViewDelegate {
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
         
         let  manualMarker = GMSMarker(position: coordinate)
+        
+        APIService.draw(src: manualMarker.position, dst: manualMarker.position)
+        
         manualMarker.map = mainMap
         self.mainMap.animate(toLocation: coordinate)
         if geoCoder == nil {
@@ -104,18 +115,36 @@ extension MainMapViewController: GMSMapViewDelegate {
 
 extension MainMapViewController: CLLocationManagerDelegate {
     
+
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        
+        if flag == true {
         guard let location = locations.last else { return }
-        
-        
         routePath?.add(location.coordinate)
         route?.path = routePath
-        
         
         let selfPosition = GMSCameraPosition.camera(withTarget: location.coordinate, zoom: defaultZoom)
         mainMap.animate(to: selfPosition)
         let  manualMarker = GMSMarker(position: location.coordinate)
+
         manualMarker.map = mainMap
+        if route?.map == nil {
+            localManager?.requestLocation()
+            route?.map = nil
+            route = GMSPolyline()
+            routePath =  GMSMutablePath()
+            route?.map = mainMap
+            localManager?.startUpdatingLocation()
+            
+        } else {
+            route?.map = nil
+        }
+                        
+        } else {
+            return
+        }
         
     }
     
