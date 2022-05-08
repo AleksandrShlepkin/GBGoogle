@@ -52,18 +52,36 @@
                                     <action selector="plusButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kLM-YS-3zx"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9qE-KG-NsN">
+                                <rect key="frame" x="344" y="434" width="50" height="50"/>
+                                <color key="backgroundColor" systemColor="systemGray3Color"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="4Fx-sp-iZw"/>
+                                    <constraint firstAttribute="height" constant="50" id="zON-8s-9l2"/>
+                                </constraints>
+                                <color key="tintColor" systemColor="labelColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="➣">
+                                    <fontDescription key="titleFontDescription" type="system" pointSize="30"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="locationButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gdm-fF-lau"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Ocl-TD-VSh" secondAttribute="bottom" id="Gkq-bI-eBD"/>
                             <constraint firstItem="dm0-Kt-au5" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="310" id="HDt-e2-FI5"/>
+                            <constraint firstItem="9qE-KG-NsN" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="390" id="Hyl-L4-CwD"/>
                             <constraint firstItem="Ocl-TD-VSh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Qz2-VP-pqo"/>
                             <constraint firstItem="rDo-Ho-SXE" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="390" id="g45-Et-Igd"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Ocl-TD-VSh" secondAttribute="trailing" id="kyu-V6-QDf"/>
                             <constraint firstItem="rDo-Ho-SXE" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="qdg-kk-s7M"/>
                             <constraint firstItem="dm0-Kt-au5" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="wQz-SQ-OK5"/>
                             <constraint firstItem="Ocl-TD-VSh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="yD4-FB-pN2"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="9qE-KG-NsN" secondAttribute="trailing" constant="20" id="zp4-wy-PAW"/>
                         </constraints>
                     </view>
                     <connections>
@@ -76,6 +94,9 @@
         </scene>
     </scenes>
     <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

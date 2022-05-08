@@ -17,6 +17,7 @@ class MainMapViewController: UIViewController {
     var geoCoder: CLGeocoder?
     var localManager: CLLocationManager?
     let defaultCoordinate = CLLocation(latitude: 55.7522, longitude: 37.6156)
+
     var route: GMSPolyline?
     var routePath: GMSMutablePath?
     var defaultZoom: Float = 18.0
@@ -25,22 +26,39 @@ class MainMapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        print(GMSServices.openSourceLicenseInfo())
 
         
         configMap()
         delegateManager()
+        
+    
     }
     
     
     @IBAction func plusButton(_ sender: Any) {
-        mainMap.animate(toZoom: defaultZoom + 1.5 )
+        mainMap.animate(toZoom: defaultZoom + Float(1.53) )
     }
     
     @IBAction func minusButton(_ sender: Any) {
-        mainMap.animate(toZoom: defaultZoom - 1.5 )
+        mainMap.animate(toZoom: defaultZoom - Float(1.54) )
     }
     
+    @IBAction func locationButton(_ sender: UIButton) {
+        
+        if route?.map == nil {
+        localManager?.requestLocation()
+        route?.map = nil
+        route = GMSPolyline()
+        routePath =  GMSMutablePath()
+        route?.map = mainMap
+        localManager?.startUpdatingLocation()
 
+        } else {
+            route?.map = nil
+        }
+    }
+    
     
     private func configMap() {
         let camera = GMSCameraPosition.camera(withTarget: defaultCoordinate.coordinate, zoom: defaultZoom)
@@ -49,6 +67,8 @@ class MainMapViewController: UIViewController {
         mainMap.delegate = self
         mainMap.isMyLocationEnabled = true
         mainMap.settings.myLocationButton = true
+        
+
         
         
     }
@@ -86,11 +106,20 @@ extension MainMapViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
+        
+        
         routePath?.add(location.coordinate)
         route?.path = routePath
         
+        
         let selfPosition = GMSCameraPosition.camera(withTarget: location.coordinate, zoom: defaultZoom)
         mainMap.animate(to: selfPosition)
+        let  manualMarker = GMSMarker(position: location.coordinate)
+        manualMarker.map = mainMap
         
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
     }
 }
