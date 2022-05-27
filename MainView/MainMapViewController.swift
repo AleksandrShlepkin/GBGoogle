@@ -7,11 +7,10 @@
 
 import UIKit
 import GoogleMaps
-import RealmSwift
 
 class MainMapViewController: UIViewController {
     
-    
+   weak var mainView: MainView?
     @IBOutlet weak var mainMap: GMSMapView!
     var marker: CLLocationCoordinate2D?
     var manualMarker: GMSMarker?
@@ -22,10 +21,8 @@ class MainMapViewController: UIViewController {
     var route: GMSPolyline?
     var routePath: GMSMutablePath?
     var defaultZoom: Float = 18.0
-    
-    
+
     var flag: Bool = false
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,9 +66,6 @@ class MainMapViewController: UIViewController {
         }
     }
     
-    
-    
-    
     private func configMap() {
         let camera = GMSCameraPosition.camera(withTarget: defaultCoordinate.coordinate, zoom: defaultZoom)
         
@@ -99,7 +93,6 @@ extension MainMapViewController: GMSMapViewDelegate {
         
         let  manualMarker = GMSMarker(position: coordinate)
         
-        APIService.draw(src: manualMarker.position, dst: manualMarker.position)
         
         manualMarker.map = mainMap
         self.mainMap.animate(toLocation: coordinate)
@@ -115,10 +108,7 @@ extension MainMapViewController: GMSMapViewDelegate {
 
 extension MainMapViewController: CLLocationManagerDelegate {
     
-
-    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
         
         if flag == true {
         guard let location = locations.last else { return }
