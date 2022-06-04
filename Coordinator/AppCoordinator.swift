@@ -19,7 +19,8 @@ class AppCoordinator: Coordinator {
     }
     
     func start() {
-        goToLogin()
+//        goToLogin()
+        goToMainView()
     }
     
     func goToLogin() {

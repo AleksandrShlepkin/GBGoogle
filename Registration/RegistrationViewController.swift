@@ -43,7 +43,8 @@ class RegistrationViewController: UIViewController {
               }
         Auth.auth().createUser(withEmail: login, password: password) { authResult , error  in
             if error != nil {
-                self.showAlert(title: "Ошибка", text: "Упс, что то пошло не так 🫣")
+                print(error ?? "")
+                self.showAlert(title: "Ошибка", text: "Упс, что то пошло не так ")
             } else {
                 let db = Firestore.firestore()
                 db.collection("Users").addDocument(data: ["login": login,

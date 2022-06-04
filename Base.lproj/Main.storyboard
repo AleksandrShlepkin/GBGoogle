@@ -35,9 +35,6 @@
                                 <color key="tintColor" systemColor="labelColor"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Вход"/>
-                                <connections>
-                                    <action selector="logInButton:" destination="JNh-Dh-ax1" eventType="touchUpInside" id="GXe-Fv-G4v"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u7R-q4-qr4">
                                 <rect key="frame" x="90" y="447" width="234" height="30"/>
@@ -70,6 +67,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="loginOutlet" destination="Tz6-QI-KeC" id="RIh-42-hQ3"/>
                         <outlet property="loginTextField" destination="bku-ar-dyw" id="xjB-cQ-Cey"/>
                         <outlet property="passwordTextField" destination="ajM-Fs-A3I" id="SRo-Rt-MdC"/>
                     </connections>
